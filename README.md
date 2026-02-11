@@ -1,178 +1,100 @@
 <div align="center">
 
-# Anisha: Secure & Scalable Full-Stack Application
-### _Empowering modern web experiences with robust backend services and a dynamic frontend._
+# 🩺 AskMedi: AI-Powered Medical Chatbot
+### _Your intelligent assistant for medical queries based on your knowledge base._
 
-![Node.js Version](https://img.shields.io/badge/node->=18-green)
-![License](https://img.shields.io/badge/license-ISC-blue)
-![Version](https://img.shields.io/badge/version-1.0.0-orange)
+![Python Version](https://img.shields.io/badge/python-3.10%2B-blue)
+![Streamlit](https://img.shields.io/badge/streamlit-1.32.0-red)
+![LangChain](https://img.shields.io/badge/langchain-0.1.0-green)
+![License](https://img.shields.io/badge/license-MIT-yellow)
 
-[Features](#features) • [Installation](#installation) • [Usage](#usage) • [Architecture](#architecture)
+[Features](#features) • [Installation](#installation) • [Usage](#usage) • [Tech Stack](#tech-stack) • [Disclaimer](#disclaimer)
 
 </div>
 
 ---
 
-### 🌟 The Value Proposition
+### 🌟 Overview
 
-*   **🚀 Rapid Development**: Leverage modern frameworks (Flask, React, Vite) for agile and efficient application delivery.
-*   **🔒 Enhanced Security**: Built with a focus on authentication and secure backend interactions, protecting your data and users.
-*   **🌐 Modular & Scalable**: Designed for clear separation of concerns, ensuring maintainability and future expansion across both frontend and backend.
+**AskMedi** is a RAG (Retrieval-Augmented Generation) application that allows users to ask medical questions and receive answers based *strictly* on a provided knowledge base (PDF documents). It uses a local FAISS vector store for retrieval and a Hugging Face LLM (via API) for generation, ensuring answers are grounded in the provided context.
 
-**Quick-Start**:
-Ready to dive in? Get Anisha up and running with a single command:
+### ✨ Features
 
+*   **📚 RAG Architecture**: Retrieves relevant context from your own PDF documents before answering.
+*   **🤖 Large Language Model**: Powered by `meta-llama/Llama-3.1-8B-Instruct` (via Hugging Face API).
+*   **⚡ Fast Retrieval**: Uses FAISS (Facebook AI Similarity Search) for efficient vector similarity search.
+*   **🖥️ User-Friendly Interface**: Built with Streamlit for an interactive chat experience.
+*   **🔍 Source Citations**: Displays the specific document chunks used to generate each answer.
+*   **🚫 Hallucination Control**: Strictly instructed to say "I don't know" if the answer isn't in the context.
+
+---
+
+### 🛠️ Installation
+
+1.  **Clone the Repository**
+    ```bash
+    git clone https://github.com/Chettipally-Vrushank/AskMedi.git
+    cd AskMedi
+    ```
+
+2.  **Create a Virtual Environment**
+    ```bash
+    python -m venv env
+    # Windows
+    .\env\Scripts\activate
+    # Mac/Linux
+    source env/bin/activate
+    ```
+
+3.  **Install Dependencies**
+    ```bash
+    pip install -r requirements.txt
+    # OR if using Pipenv
+    pipenv install
+    ```
+
+4.  **Configuration**
+    Create a `.env` file in the root directory and add your Hugging Face API token:
+    ```ini
+    HF_TOKEN=your_hugging_face_api_token
+    ```
+
+---
+
+### 🚀 Usage
+
+#### 1. Prepare the Knowledge Base
+Place your medical PDF documents in the `data/` directory.
+
+#### 2. Create Vector Embeddings
+Run the ingestion script to process PDFs and create the FAISS index:
 ```bash
-git clone https://github.com/your-username/anisha.git && cd anisha && npm install && npm run dev:all
+python create_memory_for_llm.py
 ```
-_Note: `npm run dev:all` is a conceptual command. Refer to [Installation](#installation) for detailed setup._
+*This will create a `vectorstore/db_faiss` directory containing the vector index.*
+
+#### 3. Run the Application
+Launch the Streamlit app:
+```bash
+streamlit run medibot.py
+```
+Access the app in your browser at `http://localhost:8501`.
 
 ---
 
-### 🏛️ Architecture Overview
+### 🏗️ Tech Stack
 
-The Anisha project adopts a **Client-Server architecture**, separating the user interface (React) from the data processing and business logic (Flask). Communication between these layers is facilitated through a **RESTful API**, ensuring stateless and efficient data exchange.
-
-```mermaid
-graph TD
-    A[User/Client] -- Requests --> B(React Frontend)
-    B -- API Calls (HTTP/S) --> C{Flask Backend}
-    C -- Authentication/Logic --> D[Database/External Services]
-    D -- Data/Result --> C
-    C -- API Response --> B
-    B -- Render UI --> A
-```
-
-#### Architectural Patterns
-
-| Pattern                  | Description                                                | Application in Anisha                                                    |
-| :----------------------- | :--------------------------------------------------------- | :----------------------------------------------------------------------- |
-| **Client-Server**        | Separation of UI (client) from business logic (server).    | React serves as the client, Flask as the server providing APIs.          |
-| **RESTful API**          | Standardized, stateless communication protocol.            | Flask backend exposes REST endpoints for frontend interaction.           |
-| **Virtual Environments** | Isolated Python environments for dependency management.    | `flask-auth` uses `pyvenv.cfg` for dedicated backend dependencies.       |
-| **Modular Design**       | Breaking down functionality into interchangeable modules.  | Frontend (React components/pages) and Backend (routes/services/models).  |
-| **Component-Based UI**   | Building user interfaces with reusable, encapsulated components. | React.js promotes this structure for UI development.                    |
+*   **Language**: Python
+*   **Frontend**: Streamlit
+*   **LLM Integration**: LangChain, Hugging Face Hub
+*   **Embeddings**: `sentence-transformers/all-MiniLM-L6-v2`
+*   **Vector Store**: FAISS
+*   **Model**: Meta Llama 3.1 8B Instruct
 
 ---
 
-### 📂 Project Structure
+### ⚠️ Disclaimer
 
-```
-anisha/
-├── .gitignore
-├── README.md                   # Project documentation (this file)
-├── LICENSE
-├── backend/                    # Backend services built with Flask
-│   └── flask-auth/             # Flask application for authentication
-│       ├── app.py              # Main Flask application entry point
-│       ├── config.py           # Application configuration settings
-│       ├── routes/             # Defines API endpoints (e.g., /api/auth)
-│       ├── models/             # Database schema and data models (e.g., User)
-│       ├── services/           # Business logic and service layer
-│       ├── templates/          # Jinja2 templates (if any server-side rendering)
-│       ├── static/             # Static assets served by Flask
-│       ├── requirements.txt    # Python dependencies for the backend
-│       └── pyvenv.cfg          # Python virtual environment configuration
-├── frontend/                   # Frontend application built with React & Vite
-│   └── GDG/                    # Root directory for the React/Vite project
-│       ├── public/             # Public assets (e.g., index.html, favicon)
-│       ├── src/                # React source code
-│       │   ├── assets/         # Images, fonts, etc.
-│       │   ├── components/     # Reusable UI components
-│       │   ├── pages/          # Application views/screens
-│       │   ├── App.jsx         # Main React application component
-│       │   └── main.jsx        # React application entry point
-│       ├── vite.config.js      # Vite build configuration
-│       ├── eslint.config.js    # ESLint configuration for code quality
-│       ├── package.json        # Node.js dependencies for the frontend
-│       ├── package-lock.json   # Exact dependency versions
-│       └── index.html          # Main HTML file for the frontend
-└── tools/                      # Optional: Scripts for deployment, testing, etc.
-    └── start.sh                # Conceptual script for unified local startup
-```
-
----
-
-### 🛠️ Setup & Usage
-
-To get Anisha running on your local machine, follow these steps:
-
-#### 1. Prerequisites
-
-Ensure you have the following installed:
-
-| Tool     | Purpose                          | Version     |
-| :------- | :------------------------------- | :---------- |
-| **Git**  | Version control                  | `>=2.x`     |
-| **Python** | Backend runtime                  | `>=3.8`     |
-| **pip**  | Python package installer         | `>=20.x`    |
-| **Node.js**| Frontend runtime & build tools   | `>=18`      |
-| **npm**  | Node.js package manager          | `>=8.x`     |
-
-#### 2. Installation
-
-1.  **Clone the Repository**:
-    ```bash
-    git clone https://github.com/your-username/anisha.git
-    cd anisha
-    ```
-
-2.  **Backend Setup (Flask - `backend/flask-auth`)**:
-    ```bash
-    cd backend/flask-auth
-    python -m venv venv                # Create a Python virtual environment
-    source venv/bin/activate           # Activate the environment (Linux/macOS)
-    # venv\Scripts\activate           # Activate the environment (Windows)
-    pip install -r requirements.txt    # Install Python dependencies
-    ```
-
-3.  **Frontend Setup (React/Vite - `frontend/GDG`)**:
-    ```bash
-    cd ../../frontend/GDG
-    npm install                        # Install Node.js dependencies
-    ```
-
-#### 3. Configuration
-
-Anisha utilizes environment variables for sensitive data and dynamic settings. Create `.env` files in `backend/flask-auth` and `frontend/GDG` as needed.
-
-| Variable           | Location     | Description                                                     | Example                                           |
-| :----------------- | :----------- | :-------------------------------------------------------------- | :------------------------------------------------ |
-| `FLASK_APP`        | `backend/flask-auth` | Specifies the Flask application entry point.                    | `app.py`                                          |
-| `FLASK_ENV`        | `backend/flask-auth` | Sets the Flask environment mode (development, production).      | `development`                                     |
-| `SECRET_KEY`       | `backend/flask-auth` | A secret key for session management and security.               | `supersecretkey`                                  |
-| `DATABASE_URL`     | `backend/flask-auth` | Connection string for your database.                            | `sqlite:///site.db` or `postgresql://user:pw@host/db` |
-| `VITE_API_BASE_URL`| `frontend/GDG` | Base URL for the backend API calls from the frontend.           | `http://localhost:5000/api`                       |
-
-#### 4. Running the Application
-
-1.  **Start the Flask Backend**:
-    From `anisha/backend/flask-auth`, with the virtual environment activated:
-    ```bash
-    flask run
-    # Expected output: Running on http://127.0.0.1:5000 (Press CTRL+C to quit)
-    ```
-
-2.  **Start the React Frontend**:
-    From `anisha/frontend/GDG`:
-    ```bash
-    npm run dev
-    # Expected output: Local:    http://127.0.0.1:5173/
-    ```
-
-3.  Access the application in your browser: `http://127.0.0.1:5173/`
-
----
-
-### 🗺️ Roadmap
-
-Anisha is continuously evolving. Here are some planned enhancements:
-
-- [ ] Implement user registration and login functionalities.
-- [ ] Integrate a PostgreSQL database for robust data persistence.
-- [ ] Develop comprehensive unit and integration tests for both frontend and backend.
-- [ ] Enhance UI/UX with modern design principles and responsive layouts.
-- [ ] Implement Dockerization for easier deployment and environment consistency.
-- [ ] Set up CI/CD pipelines for automated testing and deployment.
-- [ ] Explore GraphQL for more efficient data fetching.
-- [ ] Add real-time communication capabilities using WebSockets.
+> **This tool is for informational and educational purposes only.**  
+> It is **NOT** a substitute for professional medical advice, diagnosis, or treatment.  
+> Always seek the advice of your physician or other qualified health provider with any questions you may have regarding a medical condition.
